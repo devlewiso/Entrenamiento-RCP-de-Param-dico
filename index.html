@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrenamiento RCP de Paramédico</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50%" y="50%" font-size="80" text-anchor="middle" dy=".35em" font-family="Arial" fill="rgba(255,0,0,0.1)">+</text></svg>');
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        h1 {
+            color: #e63946;
+            margin-bottom: 20px;
+        }
+        .metronome {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 20px auto;
+            transition: background-color 0.5s;
+        }
+        .active {
+            background-color: #e63946;
+        }
+        .inactive {
+            background-color: #a8dadc;
+        }
+        .game-area {
+            background-color: #f1faee;
+            border: 2px solid #457b9d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d3557;
+        }
+        .btn {
+            background-color: #457b9d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #1d3557;
+        }
+        .feedback {
+            background-color: #a8dadc;
+            color: #1d3557;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .stat {
+            background-color: #a8dadc;
+            padding: 10px;
+            border-radius: 5px;
+            color: #1d3557;
+            margin: 5px;
+            flex-basis: 45%;
+        }
+        .instructions {
+            background-color: #f1faee;
+            border: 2px solid #457b9d;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            display: none;
+        }
+        .instructions h2 {
+            color: #e63946;
+            margin-top: 0;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+    </style>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "n4u4cq50qq");
+    </script>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Entrenamiento RCP de Paramédico</h1>
+        <div class="instructions" id="instructions">
+            <h2>Instrucciones de RCP</h2>
+            <ul>
+                <li>Verifique que la escena sea segura y que la persona necesite ayuda.</li>
+                <li>Llame al número de emergencia local o pida a alguien que lo haga.</li>
+                <li>Comience con 30 compresiones torácicas:</li>
+                <ul>
+                    <li>Coloque el talón de una mano en el centro del pecho.</li>
+                    <li>Coloque la otra mano encima.</li>
+                    <li>Comprima fuerte y rápido, al menos 5 cm de profundidad y a un ritmo de 100-120 por minuto.</li>
+                </ul>
+                <li>Realice 2 respiraciones de rescate:</li>
+                <ul>
+                    <li>Incline la cabeza hacia atrás y levante el mentón.</li>
+                    <li>Tapone la nariz y selle sus labios alrededor de la boca de la víctima.</li>
+                    <li>Sople durante 1 segundo, observe que el pecho se eleve.</li>
+                </ul>
+                <li>Continúe con ciclos de 30 compresiones y 2 respiraciones hasta que llegue ayuda profesional.</li>
+            </ul>
+        </div>
+        <div class="metronome inactive"></div>
+        <div class="stats">
+            <div class="stat" id="timerStat">Tiempo: 0s</div>
+            <div class="stat" id="compressionStat">Compresiones: 0</div>
+            <div class="stat" id="breathStat">Respiraciones: 0</div>
+            <div class="stat" id="rpmStat">RPM: 0</div>
+        </div>
+        <div class="game-area" id="gameArea">
+            Presiona 'Iniciar' para comenzar
+        </div>
+        <button class="btn" id="startBtn">Iniciar</button>
+        <button class="btn" id="resetBtn">Reiniciar</button>
+        <button class="btn" id="instructionsBtn">Mostrar Instrucciones</button>
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const instructionsBtn = document.getElementById('instructionsBtn');
+        const feedback = document.getElementById('feedback');
+        const metronome = document.querySelector('.metronome');
+        const timerStat = document.getElementById('timerStat');
+        const compressionStat = document.getElementById('compressionStat');
+        const breathStat = document.getElementById('breathStat');
+        const rpmStat = document.getElementById('rpmStat');
+        const instructions = document.getElementById('instructions');
+
+        let gameState = 'initial';
+        let timer = 0;
+        let compressionCount = 0;
+        let breathCount = 0;
+        let cyclePhase = 'compressions';
+        let countdown = 3;
+        let interval;
+        let lastCompressionTime = 0;
+        let rpm = 0;
+
+        const COMPRESSIONS_PER_CYCLE = 30;
+        const BREATHS_PER_CYCLE = 2;
+
+        function updateDisplay() {
+            timerStat.textContent = `Tiempo: ${timer}s`;
+            compressionStat.textContent = `Compresiones: ${compressionCount}`;
+            breathStat.textContent = `Respiraciones: ${breathCount}`;
+            rpmStat.textContent = `RPM: ${rpm}`;
+
+            if (cyclePhase === 'compressions') {
+                gameArea.textContent = `Compresión ${compressionCount % COMPRESSIONS_PER_CYCLE + 1} de ${COMPRESSIONS_PER_CYCLE}`;
+                gameArea.style.backgroundColor = '#f1faee';
+            } else {
+                gameArea.textContent = 'Dar 2 respiraciones';
+                gameArea.style.backgroundColor = '#a8dadc';
+            }
+
+            metronome.classList.toggle('active', timer % 2 === 0);
+            metronome.classList.toggle('inactive', timer % 2 !== 0);
+        }
+
+        function calculateRPM() {
+            const now = Date.now();
+            if (lastCompressionTime !== 0) {
+                const timeDiff = (now - lastCompressionTime) / 1000; // convertir a segundos
+                rpm = Math.round(60 / timeDiff);
+            }
+            lastCompressionTime = now;
+        }
+
+        function handleCompression() {
+            if (gameState === 'playing' && cyclePhase === 'compressions') {
+                compressionCount++;
+                calculateRPM();
+                if (compressionCount % COMPRESSIONS_PER_CYCLE === 0) {
+                    cyclePhase = 'breaths';
+                    breathCount = 0;
+                    feedback.textContent = '¡Dar 2 respiraciones!';
+                }
+            }
+        }
+
+        function handleBreath() {
+            if (gameState === 'playing' && cyclePhase === 'breaths') {
+                breathCount++;
+                if (breathCount >= BREATHS_PER_CYCLE) {
+                    cyclePhase = 'compressions';
+                    feedback.textContent = '';
+                }
+            }
+        }
+
+        function handleAction() {
+            if (cyclePhase === 'compressions') {
+                handleCompression();
+            } else {
+                handleBreath();
+            }
+            updateDisplay();
+        }
+
+        function startGame() {
+            gameState = 'countdown';
+            countdown = 3;
+            feedback.textContent = 'Preparados en ' + countdown;
+            interval = setInterval(() => {
+                if (gameState === 'countdown') {
+                    countdown--;
+                    feedback.textContent = 'Preparados en ' + countdown;
+                    if (countdown <= 0) {
+                        gameState = 'playing';
+                        feedback.textContent = '¡Comienzan las compresiones!';
+                        timer = 0;
+                    }
+                } else if (gameState === 'playing') {
+                    timer++;
+                    handleAction();
+                }
+            }, 1000);
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (gameState === 'initial' || gameState === 'paused') {
+                startGame();
+                startBtn.textContent = 'Pausar';
+            } else if (gameState === 'playing') {
+                clearInterval(interval);
+                gameState = 'paused';
+                startBtn.textContent = 'Continuar';
+            } else if (gameState === 'paused') {
+                startGame();
+                startBtn.textContent = 'Pausar';
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(interval);
+            gameState = 'initial';
+            timer = 0;
+            compressionCount = 0;
+            breathCount = 0;
+            cyclePhase = 'compressions';
+            countdown = 3;
+            lastCompressionTime = 0;
+            rpm = 0;
+            feedback.textContent = '';
+            startBtn.textContent = 'Iniciar';
+            gameArea.textContent = 'Presiona \'Iniciar\' para comenzar';
+            updateDisplay();
+        });
+
+        instructionsBtn.addEventListener('click', () => {
+            if (instructions.style.display === 'none') {
+                instructions.style.display = 'block';
+                instructionsBtn.textContent = 'Ocultar Instrucciones';
+            } else {
+                instructions.style.display = 'none';
+                instructionsBtn.textContent = 'Mostrar Instrucciones';
+            }
+        });
+
+        updateDisplay();
+    </script>
+</body>
+</html>
