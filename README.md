@@ -1,43 +1,40 @@
-Entrenamiento RCP de Paramédico
-Este proyecto es una aplicación web interactiva diseñada para simular un entrenamiento básico de Reanimación Cardiopulmonar (RCP). La aplicación guía al usuario a través de los pasos esenciales de RCP, incluyendo compresiones torácicas y respiraciones de rescate, mientras proporciona retroalimentación en tiempo real sobre el ritmo y la técnica.
+# Pulso — Entrenamiento RCP de Paramédico
 
-Características
-Simulación de RCP: La aplicación simula un escenario de RCP, guiando al usuario a través de ciclos de 30 compresiones torácicas y 2 respiraciones de rescate.
+Simulador educativo de ritmo y secuencia para RCP en adultos sin vía aérea avanzada. Interfaz responsive con estadísticas, metrónomo visual, esquema del tórax y guía de práctica.
 
-Metrónomo visual: Un círculo que cambia de color para indicar el ritmo correcto de las compresiones (100-120 compresiones por minuto).
+## Uso
 
-Estadísticas en tiempo real: Muestra el tiempo transcurrido, el número de compresiones y respiraciones realizadas, y el ritmo actual en compresiones por minuto (RPM).
+Abre `index.html` en un navegador moderno, sin instalación ni compilación.
 
-Instrucciones detalladas: Proporciona instrucciones paso a paso sobre cómo realizar RCP correctamente.
+1. Pulsa **Iniciar práctica**. La cuenta regresiva dura tres segundos.
+2. Pulsa **Registrar compresión** una vez por compresión simulada. También puedes utilizar Espacio con el botón enfocado o fuera de otros controles.
+3. Tras 30 pulsaciones, registra dos ventilaciones simuladas. El siguiente ciclo comienza automáticamente, pero las acciones siempre son manuales.
+4. **Pausar** conserva el tiempo y los contadores; **Continuar** reanuda la sesión. **Reiniciar** borra la práctica actual.
 
-Interacción sencilla: Botones para iniciar, pausar, reiniciar y mostrar/ocultar las instrucciones.
+El metrónomo visual marca 110 pulsos por minuto. El ritmo mostrado utiliza hasta los últimos cinco intervalos entre pulsaciones; se reinicia al pausar o cambiar de fase para excluir esas pausas. Las ventilaciones y los ciclos se acumulan durante toda la sesión.
 
-Instrucciones de Uso
-Iniciar la simulación: Haz clic en el botón "Iniciar" para comenzar la simulación. La aplicación comenzará con una cuenta regresiva de 3 segundos antes de iniciar el ciclo de RCP.
+## Archivos
 
-Realizar compresiones: Durante la fase de compresiones, la pantalla indicará el número de compresiones realizadas. El metrónomo visual te ayudará a mantener el ritmo correcto.
+- `index.html`: estructura, guía, planes Free y Enterprise y contacto comercial.
+- `styles.css`: diseño y adaptación a móvil, con fuentes locales del sistema.
+- `app.js`: estado de sesión, controles, metrónomo y métricas.
 
-Realizar respiraciones: Después de completar 30 compresiones, la aplicación te indicará que realices 2 respiraciones de rescate.
+## Alcance
 
-Pausar o reiniciar: Puedes pausar la simulación en cualquier momento haciendo clic en "Pausar". Para reiniciar la simulación, haz clic en "Reiniciar".
+Registra pulsaciones, no mide profundidad, retroceso torácico ni calidad de ventilación. No sustituye la formación práctica supervisada ni constituye una guía de emergencia o certificación.
 
-Ver instrucciones: Haz clic en "Mostrar Instrucciones" para ver una guía detallada sobre cómo realizar RCP correctamente.
+Referencia: [AHA 2025 — Adult Basic Life Support](https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-basic-life-support).
 
-Estructura del Proyecto
-index.html: Contiene la estructura HTML de la página, los estilos CSS y el código JavaScript necesario para la simulación.
+## Validación
 
-README.md: Este archivo, que proporciona información sobre el proyecto y cómo usarlo.
+Comprobados en Chromium: cuenta regresiva, ausencia de compresiones automáticas, ciclo 30:2, pausa y continuación, reinicio y ausencia de desbordamiento horizontal a 390, 768 y 1024 píxeles. Revisión visual a 1440 y 390 píxeles.
 
-Personalización
-Puedes personalizar la aplicación modificando el código JavaScript en el archivo index.html. Por ejemplo, puedes ajustar el número de compresiones por ciclo, el ritmo de compresiones, o añadir nuevas características como sonidos de metrónomo o animaciones adicionales.
+## Licencia
 
-Limitaciones
-Interacción manual: La aplicación no detecta automáticamente las compresiones o respiraciones; el usuario debe hacer clic en los botones correspondientes para avanzar en la simulación.
+MIT. Consulta `LICENSE`.
 
-Navegador web: La aplicación está diseñada para funcionar en navegadores web modernos que soporten JavaScript y CSS3.
+## Planes y privacidad de la demo
 
-Contribuciones
-Si deseas contribuir a este proyecto, siéntete libre de hacer un fork del repositorio y enviar un pull request con tus mejoras.
+Free funciona solo en memoria: no hay cuentas, API, almacenamiento web, historial ni grabación de sesiones. Se retiraron Microsoft Clarity y Google Fonts remotas. El alojamiento puede mantener sus propios registros técnicos, ajenos al historial de prácticas de la aplicación.
 
-Licencia
-Este proyecto está bajo la licencia MIT. Para más detalles, consulta el archivo LICENSE.
+Enterprise es una oferta de desarrollo a medida, no una función ya implementada. Los precios públicos son sugeridos y requieren una cotización. El análisis, alcance base y supuestos están en `ANALISIS-MERCADO.md`. Contacto: devlewiso@gmail.com.
